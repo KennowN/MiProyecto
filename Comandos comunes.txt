@@ -1,0 +1,157 @@
+cd para cambiar de carpeta
+mkdir para crear una carpeta nueva
+rm para eliminar
+
+En la terminal de PowerShell:
+python -m venv <nombre del entorno>
+
+.\nombre del entorno\Scripts\activate
+
+
+En la terminal de GitBash:
+python -m venv <nombre del entorno>
+
+cd \venv
+cd \Scripts
+. activate
+
+pip install Django (instala django)
+pip list (muestra los componentes del entorno)
+django-admin startproject <nombre del proyecto>
+
+cd <dentro del proyecto>
+python .\manage.py makemigrations
+python .\manage.py migrate
+
+
+pip install virtualenv
+python manage.py runserver
+
+cd afterclass
+python manage.py runserver
+
+Copio la ruta del http
+
+python manage.py startapp AppMVT
+django-admin startapp App2
+
+Models:
+from django.db import models
+
+# Create your models here.
+
+class Familia(models.Model):
+
+    nombre = models.CharField(max_lenght = 40)
+    apellido = models.CharField(max_lenght = 40)
+    edad = models.IntegerField()
+    nacimiento = models.DateField()
+    email = models.EmailField()
+
+
+Views:
+
+from django.shortcuts import render
+
+# Create your views here.
+
+from MiApp.models import Familia 
+
+def mostrar_familia(request):
+    f1 = Familia(nombre = 'Eduardo', apellido = 'Choren', edad = 63, nacimiento = '1958-12-08')
+    f2 = Familia(nombre = 'Claudia', apellido = 'Grande', edad = 57, nacimiento = '1965-08-08')
+    f3 = Familia(nombre = 'Agustina', apellido = 'Choren', edad = 31, nacimiento = '1991-04-08')
+
+    return render(request, 'MiApp/Familiares.html', {'Familiaes': [f1, f2, f3]})
+
+
+URLS (de la app// lo tengo que crear yo al archivo (es .py)):
+
+from django.urls import path
+
+from MVT.views import mostrar_familia
+
+urlpatterns = [
+
+    path('Familiares/', mostrar_familia),
+
+]
+
+
+URLS (Del proyecto):
+
+"""EjercicioMVT2 URL Configuration
+
+The `urlpatterns` list routes URLs to views. For more information please see:
+    https://docs.djangoproject.com/en/4.1/topics/http/urls/
+Examples:
+Function views
+    1. Add an import:  from my_app import views
+    2. Add a URL to urlpatterns:  path('', views.home, name='home')
+Class-based views
+    1. Add an import:  from other_app.views import Home
+    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
+Including another URLconf
+    1. Import the include() function: from django.urls import include, path
+    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
+"""
+from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('MVT/', include('MVT.urls')),
+]
+
+Creo la carpeta Templates y dentro creo el archivo Familiares.html
+Familiares.html (lo tengo que crear yo, con la extensión html):
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <p>Mis familiares son:</p>
+
+    {% for Familia in Familiares %}
+
+    <p>{{familia.nombre}} {{familia.apellido}}, tiene {{amigo.edad}} años, nacio el {{amigo.nacimiento}}</p>
+
+    {% endfor %}
+
+</body>
+</html>
+
+
+
+Settings:
+
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'MVT',
+]
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [BASE_DIR, 'Templates'],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
